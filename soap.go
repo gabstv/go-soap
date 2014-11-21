@@ -20,22 +20,22 @@ type Body struct {
 	Data    string   `xml:",innerxml"`
 }
 
-func NewEnvelope(data interface{}) Envelope {
+func NewEnvelope(data interface{}) (*Envelope, error) {
 	msg, err := xml.Marshal(data)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return Envelope{
+	return &Envelope{
 		Xsi:           "http://www.w3.org/2001/XMLSchema-instance",
 		Soapenc:       "http://schemas.xmlsoap.org/soap/encoding/",
 		Xsd:           "http://www.w3.org/2001/XMLSchema",
 		EncodingStyle: "http://schemas.xmlsoap.org/soap/encoding/",
 		Soap:          "http://schemas.xmlsoap.org/soap/envelope/",
 		Body:          Body{Data: string(msg)},
-	}
+	}, nil
 }
 
-func WriteEnvelope(env Envelope, writer io.Writer) error {
+func (env *Envelope) WriteTo(writer io.Writer) error {
 	msg, err := xml.Marshal(env)
 	if err != nil {
 		return err
@@ -45,11 +45,11 @@ func WriteEnvelope(env Envelope, writer io.Writer) error {
 	return nil
 }
 
-func SendEnvelope(env Envelope, url string) (error, *http.Response) {
+func (env *Envelope) Post(url string) (error, *http.Response) {
 	buf := new(bytes.Buffer)
 
 	buf.WriteString(`<?xml version="1.0" encoding="utf-8"?>`)
-	err := WriteEnvelope(env, buf)
+	err := env.WriteTo(buf)
 	if err != nil {
 		return err, nil
 	}
