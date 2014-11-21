@@ -66,6 +66,7 @@ func (env *Envelope) Post(url string) (response *Envelope, err error) {
 	defer htresp.Body.Close()
 
 	dec := xml.NewDecoder(htresp.Body)
+	response = &Envelope{}
 	err = dec.Decode(response)
 
 	return
