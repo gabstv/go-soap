@@ -50,7 +50,7 @@ func (t *tht) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	dat.Bar = 2
 	dat.Baz = true
 
-	env, err = NewEnvelope(dat)
+	env, err = Marshal(dat)
 
 	if err != nil {
 		t.t.Fatal(err)
@@ -76,7 +76,7 @@ func TestSoap(t *testing.T) {
 
 	dat := &Tr{"foo", 1, false}
 
-	env, err := NewEnvelope(dat)
+	env, err := Marshal(dat)
 
 	if err != nil {
 		t.Fatal(err)

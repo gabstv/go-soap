@@ -21,7 +21,7 @@ type Body struct {
 	Data    string   `xml:",innerxml"`
 }
 
-func NewEnvelope(data interface{}) (*Envelope, error) {
+func Marshal(data interface{}) (*Envelope, error) {
 	msg, err := xml.Marshal(data)
 	if err != nil {
 		return nil, err
