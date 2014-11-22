@@ -1,7 +1,7 @@
 go-soap
 =======
 
-Send and receive data packed in SOAP 1.1  
+### Send and receive data wrapped in SOAP 1.1  
 
 Example:
 ```go
@@ -32,6 +32,8 @@ func main(){
 	msg.Foo = "test"
 	msg.Bar.Val = 100
 	msg.Bar.Baz = "foobarbaz"
+
+	// soap.Marshal creates a *soap.Envelope that is ready to submit
 	v, err := soap.Marshal(msg)
 	if err != nil {
 		panic(err)
@@ -50,4 +52,17 @@ func main(){
 
 	fmt.Println("Response:", out)
 }
+```  
+
+###If you need to change the Content-Type:
+
+```go
+// after running soap.Marshal(content)
+v.HTMLContentType = "application/xml+soap" // or any other Content-Type the server will allow
+```
+
+If you're not using HTML 1.1 to submit, you can also write to a buffer:  
+
+```go
+err := v.WriteTo(some_io_Writer)
 ```
