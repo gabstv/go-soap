@@ -1,7 +1,8 @@
 go-soap
 =======
 
-### Send and receive data wrapped in SOAP 1.1  
+### Send and receive data wrapped in SOAP v1.1  
+HTTP, SMTP, TCP, UDP or JMS  
 
 Example:
 ```go
@@ -38,7 +39,7 @@ func main(){
 	if err != nil {
 		panic(err)
 	}
-	resp, err := v.Post("http://www.example.com/api/v1/soapwebservice.asmx")
+	resp, err := v.Post("https://www.example.com/api/v1/soapwebservice.asmx")
 	if err != nil {
 		panic(err)
 	}
@@ -58,7 +59,7 @@ func main(){
 
 ```go
 // after running soap.Marshal(content)
-v.HTMLContentType = "application/xml+soap" // or any other Content-Type the server will allow
+v.HTMLContentType = "application/xml+soap"
 ```
 
 If you're not using HTML 1.1 to submit, you can also write to a buffer:  
