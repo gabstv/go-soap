@@ -5,7 +5,7 @@ Send and receive data packed in SOAP 1.1
 
 Example:
 ```go
-package sample
+package main
 
 import(
 	"github.com/gabstv/go-soap"
