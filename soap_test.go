@@ -104,3 +104,48 @@ func TestSoap(t *testing.T) {
 
 	//
 }
+
+func TestUnmarshal(t *testing.T) {
+	vvv := `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <AuthorizeTransaction xmlns="https://www.example.com/webservice/pay">
+      <request>
+        <OrderData>
+          <MerchantId>MI5678</MerchantId>
+          <OrderId>OID3949v1</OrderId>
+        </OrderData>
+      </request>
+    </AuthorizeTransaction>
+  </soap:Body>
+</soap:Envelope>`
+	vv := struct {
+		XMLName xml.Name `xml:"AuthorizeTransaction"`
+		Request struct {
+			OrderData struct {
+				MerchantId string
+				OrderId    string
+			}
+		} `xml:"request"`
+	}{}
+	ev := Envelope{}
+	err := xml.Unmarshal([]byte(vvv), &ev)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = ev.Unmarshal(&vv)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if vv.Request.OrderData.MerchantId != "MI5678" {
+		t.Fatal("Unmarshal error:", vv)
+	}
+
+	if vv.Request.OrderData.OrderId != "OID3949v1" {
+		t.Fatal("Unmarshal error:", vv)
+	}
+}
