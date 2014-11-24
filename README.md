@@ -34,7 +34,7 @@ func main(){
 	msg.Bar.Val = 100
 	msg.Bar.Baz = "foobarbaz"
 
-	// soap.Marshal creates a *soap.Envelope that is ready to submit
+	// soap.Marshal creates a *soap.Envelope that is ready to be submitted.
 	v, err := soap.Marshal(msg)
 	if err != nil {
 		panic(err)
