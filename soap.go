@@ -4,8 +4,13 @@ import "encoding/xml"
 import "net/http"
 import "bytes"
 import "io"
+import "fmt"
 
 type M map[string]string
+
+var (
+	Verbose bool
+)
 
 type Envelope struct {
 	XMLName         xml.Name `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
@@ -84,6 +89,10 @@ func (env *Envelope) PostAdv(url string, headers M) (response *Envelope, err err
 	}
 
 	var htresp *http.Response
+
+	if Verbose {
+		fmt.Println(buf.String())
+	}
 
 	req, err := http.NewRequest("POST", url, buf)
 
