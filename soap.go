@@ -5,6 +5,8 @@ import "net/http"
 import "bytes"
 import "io"
 
+type M map[string]string
+
 type Envelope struct {
 	XMLName         xml.Name `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
 	Xsi             string   `xml:"xmlns:xsi,attr"`
@@ -58,6 +60,44 @@ func (env *Envelope) Post(url string) (response *Envelope, err error) {
 
 	var htresp *http.Response
 	htresp, err = http.Post(url, env.HTTPContentType, buf)
+
+	if err != nil {
+		return
+	}
+
+	defer htresp.Body.Close()
+
+	dec := xml.NewDecoder(htresp.Body)
+	response = &Envelope{}
+	err = dec.Decode(response)
+
+	return
+}
+
+func (env *Envelope) PostAdv(url string, headers M) (response *Envelope, err error) {
+	buf := new(bytes.Buffer)
+	buf.WriteString(`<?xml version="1.0" encoding="utf-8"?>`)
+	err = env.WriteTo(buf)
+
+	if err != nil {
+		return
+	}
+
+	var htresp *http.Response
+
+	req, err := http.NewRequest("POST", url, buf)
+
+	if err != nil {
+		return
+	}
+
+	req.Header.Set("Content-Type", env.HTTPContentType)
+
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
+	htresp, err = http.DefaultClient.Do(req)
 
 	if err != nil {
 		return
