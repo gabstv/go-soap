@@ -5,6 +5,7 @@ import "net/http"
 import "bytes"
 import "io"
 import "fmt"
+import "reflect"
 
 type M map[string]string
 
@@ -29,9 +30,15 @@ type Body struct {
 }
 
 func Marshal(data interface{}) (*Envelope, error) {
-	msg, err := xml.Marshal(data)
-	if err != nil {
-		return nil, err
+	var msg []byte
+	var err error
+	if kind := reflect.TypeOf(data).Kind(); kind == reflect.String {
+		msg = []byte(reflect.TypeOf(data).String())
+	} else {
+		msg, err = xml.Marshal(data)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &Envelope{
 		Xsi:             "http://www.w3.org/2001/XMLSchema-instance",
