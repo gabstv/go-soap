@@ -33,7 +33,7 @@ func Marshal(data interface{}) (*Envelope, error) {
 	var msg []byte
 	var err error
 	if kind := reflect.TypeOf(data).Kind(); kind == reflect.String {
-		msg = []byte(reflect.TypeOf(data).String())
+		msg = []byte(reflect.ValueOf(data).String())
 	} else {
 		msg, err = xml.Marshal(data)
 		if err != nil {
